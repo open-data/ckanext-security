@@ -71,8 +71,8 @@ class LoginThrottle(object):
 
         address_locked = la in results and self.request_time < int(results[la])
         user_locked = lu in results and self.request_time < int(results[lu])
-        address_failures = sum(int(results.get(b, 0) for b in ab)) + 1
-        user_failures = sum(int(results.get(b, 0) for b in ub)) + 1
+        address_failures = sum(int(results.get(b, 0)) for b in ab) + 1
+        user_failures = sum(int(results.get(b, 0)) for b in ub) + 1
 
         new_locks = set()
         if not address_locked and address_failures >= self.address_max_failures:
