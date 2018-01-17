@@ -14,8 +14,11 @@ class MemcachedClient(object):
     def get(self, key):
         return self.cli.get(self.prefix + key)
 
-    def set(self, key, value):
-        return self.cli.set(self.prefix + key, value)
+    def get_multi(self, keys):
+        return self.cli.get_multi(keys, key_prefix=self.prefix)
+
+    def set(self, key, value, time=0):
+        return self.cli.set(self.prefix + key, value, time=time)
 
     def delete(self, key):
         return self.cli.delete(self.prefix + key)
