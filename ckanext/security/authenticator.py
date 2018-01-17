@@ -10,6 +10,7 @@ from webob.request import Request
 from zope.interface import implements
 
 from ckanext.security.cache.login import LoginThrottle
+from ckanext.security.mailer import notify_lockout
 
 
 log = logging.getLogger(__name__)
@@ -44,22 +45,33 @@ class CKANLoginThrottle(UsernamePasswordAuthenticator):
         # in every case and make timing attacks a little more difficult.
         auth_user = super(CKANLoginThrottle, self).authenticate(environ, identity)
 
-        # Check if there is a lock on the requested user, and return None if
-        # we have a lock.
-        if throttle.check_attempts() is False:
-            log.info('User %r (%s) locked out by brute force protection.' % (login, remote_addr))
-            throttle.increment()  # Increment so we only send an email the first time around
+        # Check if there is a lock on the remote address/user
+        reason = throttle.lockout_reason()
+        if reason:
+            log.info('Login blocked by brute force protection. %r %r %r %s' % (
+                reason, remote_addr, login, 'pw-ok' if auth_user else 'pw-bad'))
             return None
 
         # If the CKAN authenticator as successfully authenticated the request
-        # and the user wasn't locked out above, reset the throttle counter and
-        # return the user object.
+        # and the user wasn't locked out above, return the user object.
         if auth_user is not None:
-            throttle.reset()
+            log.info('Login accepted. %r %r' % (remote_addr, login))
             return auth_user
 
+        log.info('Login failed. %r %r' % (remote_addr, login))
+
         # Increment the throttle counter if the login failed.
-        throttle.increment()
+        new_lockouts = throttle.failed_attempt()
+        if 'user' in new_lockouts:
+            log.info("User now locked out by brute force protection. %r" % login)
+            try:
+                notify_lockout(self.user, self.remote_addr)
+                log.debug("Lockout notification for user %s sent" % login)
+            except Exception as exc:
+                msg = "Sending lockout notification for %s failed"
+                log.exception(msg % login, exc_info=exc)
+        if 'address' in new_lockouts:
+            log.info("Address now locked out by brute force protection. %r" % remote_addr)
 
 
 class BeakerMemcachedAuth(object):

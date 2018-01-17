@@ -4,20 +4,25 @@ import time
 
 from ckan.common import config
 
-from ckanext.security.mailer import notify_lockout
 from ckanext.security.cache.clients import MemcachedThrottleClient
 
+BUCKETS_PER_TIMEOUT = 4
 
 log = logging.getLogger(__name__)
 
 
 class LoginThrottle(object):
-    login_lock_timeout = int(config.get('ckanext.security.lock_timeout', 60 * 15))
-    login_max_count = int(config.get('ckanext.security.login_max_count', 10))
-    count = 0
+    user_lock_timeout = int(config.get('ckanext.security.user_lock_timeout', 60 * 15))
+    user_max_failures = int(config.get('ckanext.security.user_max_failures', 10))
+    address_lock_timeout = int(config.get('ckanext.security.address_lock_timeout', 60 * 60 * 5))
+    address_max_failures = int(config.get('ckanext.security.address_login_max_count', 20))
 
     def __init__(self, user, remote_addr):
         self.request_time = time.time()
+        self.user_bucket = int(
+            self.request_time * BUCKETS_PER_TIMEOUT / self.user_lock_timeout)
+        self.address_bucket = int(
+            self.request_time * BUCKETS_PER_TIMEOUT / self.address_lock_timeout)
         self.user = user
         self.cli = MemcachedThrottleClient()
         self.remote_addr = remote_addr
@@ -26,49 +31,62 @@ class LoginThrottle(object):
         # repr of the User class.
         self.user_name = str(user) if user is None else user.name
 
-    def _check_count(self):
-        return self.count >= self.login_max_count
+    def lockout_reason(self):
+        """
+        Returns:
+          'address' if the remote address is locked out
+          'user' if this user account is locked out
+          None if neither are currently locked out
+        """
+        lu = 'lu:' + self.user_name
+        la = 'la:' + self.remote_addr
 
-    def _check_time(self, last_attempt):
-        return self.request_time - float(last_attempt) < self.login_lock_timeout
+        results = self.cli.get_multi([lu, la])
+        if la in results and self.request_time < int(results[la]):
+            return 'address'
+        if lu in results and self.request_time < int(results[lu]):
+            return 'user'
 
-    def get(self):
-        value = self.cli.get(self.remote_addr)
-        if value is not None:
-            return json.loads(value)
-        return {}
+    def failed_attempt(self):
+        """
+        Record a failed login attempt against the address and username counters.
 
-    def reset(self):
-        value = self.get()
-        if self.user_name in value:
-            del value[self.user_name]
-        self.cli.set(self.remote_addr, json.dumps(value))
+        Returns a set including:
+        'user' if the user owning the account is now locked out (and was not before)
+        'address' if the remote address is now locked out (and was not before)
+        """
+        ub = live_buckets('u:' + self.user_name, self.user_bucket)
+        ab = live_buckets('a:' + self.remote_addr, self.address_bucket)
+        lu = 'lu:' + self.user_name
+        la = 'la:' + self.remote_addr
 
-    def increment(self):
-        value = self.get()
-        # An email will be sent once the count has reached login_max_count, so we
-        # will only increment this counter until login_max_count + 1. Otherwise,
-        # the user would be locked out for another `login_lock_timeout` minutes
-        # whenever he/she tries to login again.
-        if self.count < self.login_max_count + 1:
-            value.update({self.user_name: "%s:%s" % (self.count + 1, self.request_time)})
-            self.cli.set(self.remote_addr, json.dumps(value))
+        results = self.cli.get_multi(ub + ab + [lu, la])
 
-    def needs_lockout(self, cache_value):
-        count, last_attempt = cache_value.split(':')
-        self.count = int(count) if self._check_time(last_attempt) else 0
-        if self._check_count():
-            if self.user is not None and self.count == self.login_max_count:
-                log.info("%s locked out by brute force protection" % self.user.name)
-                try:
-                    notify_lockout(self.user, self.remote_addr)
-                    log.debug("Lockout notification for user %s sent" % self.user.name)
-                except Exception as exc:
-                    msg = "Sending lockout notification for %s failed"
-                    log.exception(msg % self.user.name, exc_info=exc)
-            return False
+        self.cli.set(ub[0], int(results.get(ub[0], 0)) + 1,
+            self.user_lock_timeout
+            * (BUCKETS_PER_TIMEOUT + 1) / BUCKETS_PER_TIMEOUT)
+        self.cli.set(ab[0], int(results.get(ab[0], 0)) + 1,
+            self.address_lock_timeout
+            * (BUCKETS_PER_TIMEOUT + 1) / BUCKETS_PER_TIMEOUT)
 
-    def check_attempts(self):
-        cached = self.get().get(self.user_name, None)
-        if cached is not None:
-            return self.needs_lockout(cached)
+        address_locked = la in results and self.request_time < int(results[la])
+        user_locked = lu in results and self.request_time < int(results[lu])
+        address_failures = sum(int(results.get(b, 0) for b in ab)) + 1
+        user_failures = sum(int(results.get(b, 0) for b in ub)) + 1
+
+        new_locks = set()
+        if not address_locked and address_failures >= self.address_max_failures:
+            new_locks.add('address')
+            self.cli.set(la, int(self.request_time + self.address_lock_timeout),
+                self.address_lock_timeout)
+        if not user_locked and user_failures >= self.user_max_failures:
+            new_locks.add('user')
+            self.cli.set(lu, int(self.request_time + self.user_lock_timeout),
+                self.user_lock_timeout)
+        return new_locks
+
+
+def live_buckets(key, current_bucket):
+    "return keys of live buckets to pass to get_multi"
+    return [key + ":" + str(b) for b in
+        range(current_bucket, current_bucket - BUCKETS_PER_TIMEOUT - 1, -1)]
