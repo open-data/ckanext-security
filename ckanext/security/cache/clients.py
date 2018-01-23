@@ -8,7 +8,7 @@ class MemcachedClient(object):
 
     def __init__(self):
         url = config['ckanext.security.memcached']
-        conf = {"binary": True, "behaviors": {"tcp_nodelay": True, "ketama": True}}
+        conf = {"binary": True, "behaviors": {"tcp_nodelay": False, "ketama": True}}
         self.cli = pylibmc.Client([url], **conf)
 
     def get(self, key):
