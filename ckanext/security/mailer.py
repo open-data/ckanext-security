@@ -3,7 +3,7 @@ import codecs
 
 from ckan.common import config
 from ckan.lib.base import render_jinja2
-from ckan.lib.mailer import *
+from ckan.lib.mailer import get_reset_link_body, mail_user
 from ckan import model
 
 

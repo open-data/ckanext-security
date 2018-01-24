@@ -34,7 +34,7 @@ def user_password_validator(key, data, errors, context):
         ]
         badchars = any(unicodedata.decomposition(x) for x in value)
         if len(value) < MIN_PASSWORD_LENGTH or sum(rules) < 3 or badchars:
-            raise Invalid(_(MIN_LEN_ERROR.format(MIN_PASSWORD_LENGTH)))
+            raise Invalid(_(MIN_LEN_ERROR).format(MIN_PASSWORD_LENGTH))
 
 
 def old_username_validator(key, data, errors, context):
