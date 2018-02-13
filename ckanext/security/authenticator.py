@@ -67,7 +67,7 @@ class CKANLoginThrottle(UsernamePasswordAuthenticator):
         if 'user' in new_lockouts:
             log.info("User now locked out by brute force protection. %r" % login)
             try:
-                notify_lockout(login, remote_addr)
+                notify_lockout(throttle.user, remote_addr)
                 log.debug("Lockout notification for user %s sent" % login)
             except Exception as exc:
                 msg = "Sending lockout notification for %s failed"
