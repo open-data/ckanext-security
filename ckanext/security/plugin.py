@@ -2,12 +2,14 @@ import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
 import ckan.logic.schema
 
-from ckanext.security import schema
+from ckanext.security import schema, logic, auth
 
 
 class CatalystSecurityPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.IRoutes)
+    plugins.implements(plugins.IActions)
+    plugins.implements(plugins.IAuthFunctions)
 
     def update_config(self, config):
         # Monkeypatching all user schemas in order to enforce a stronger password
@@ -30,3 +32,14 @@ class CatalystSecurityPlugin(plugins.SingletonPlugin):
 
     def after_map(self, urlmap):
         return urlmap
+
+    def get_actions(self):
+        return {
+            'security_user_lockout_delete': logic.security_user_lockout_delete,
+            'user_update': logic.user_update,
+        }
+
+    def get_auth_functions(self):
+        return {
+            'security_user_lockout_delete': auth.security_user_lockout_delete,
+        }

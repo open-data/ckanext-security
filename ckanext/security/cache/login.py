@@ -85,6 +85,15 @@ class LoginThrottle(object):
                 self.user_lock_timeout)
         return new_locks
 
+    def remove_user_lockout(self):
+        """
+        Manually remove lockout for a specific user
+        """
+        ub = live_buckets('u:' + self.user_name, self.user_bucket)
+        lu = 'lu:' + self.user_name
+        for b in [lu] + ub:
+            self.cli.delete(b)
+
 
 def live_buckets(key, current_bucket):
     "return keys of live buckets to pass to get_multi"
