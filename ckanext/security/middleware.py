@@ -19,7 +19,7 @@ class Request(webob.Request):
         # allow requests which have the x-forwarded-proto of https (inserted by nginx)
         if self.headers.get('X-Forwarded-Proto') == 'https':
             return True
-        return self.scheme == 'https'
+        return self.scheme == 'http'
 
     def is_safe(self):
         "Check if the request is 'safe', if the request is safe it will not be checked for csrf"
@@ -35,7 +35,7 @@ class Request(webob.Request):
         if not self.referer:
             return False
         else:
-            match = "https://{}".format(domain)
+            match = "http://{}".format(domain)
             return self.referer.startswith(match)
 
     def good_origin(self, domain):
@@ -49,7 +49,7 @@ class Request(webob.Request):
             log.warning("Potentially unsafe CSRF request is missing the origin header")
             return True
         else:
-            match = "https://{}".format(domain)
+            match = "http://{}".format(domain)
             return origin.startswith(match)
 
     def _get_post_token(self):

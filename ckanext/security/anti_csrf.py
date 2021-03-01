@@ -103,8 +103,8 @@ def get_response_token(request, response):
 def create_response_token(response):
     import binascii, os
     token = binascii.hexlify(os.urandom(32))
-    response.set_cookie(TOKEN_FIELD_NAME, token, secure=True, httponly=True)
-    response.set_cookie(TOKEN_FRESHNESS_COOKIE_NAME, '1', max_age=600, secure=True, httponly=True)
+    response.set_cookie(TOKEN_FIELD_NAME, token, secure=False, httponly=True)
+    response.set_cookie(TOKEN_FRESHNESS_COOKIE_NAME, '1', max_age=600, secure=False, httponly=True)
     return token
 
 
