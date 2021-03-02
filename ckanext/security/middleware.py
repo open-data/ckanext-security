@@ -1,6 +1,7 @@
 import anti_csrf
 import webob
 from webob.exc import HTTPForbidden
+from ckan.common import config
 
 import logging
 
@@ -86,6 +87,11 @@ class Request(webob.Request):
             return None
 
     def check_token(self):
+        # bypass token validation for AJAX requests from origin
+        if self.headers['X-Requested-With'] == 'XMLHttpRequest' and \
+                self.headers['Origin'] == config.get('ckan.site_url'):
+            return True
+
         log.debug("Checking token matches Token {}, cookie_token: {}".format(self.token, self.get_cookie_token()))
         return self.token is not None and self.token == self.get_cookie_token()
 
@@ -118,8 +124,18 @@ class CSRFMiddleware(object):
             return response_value
 
     def is_valid(self, request):
+        print " CSFR ========================================================="
+        print request.url + " request.is_safe() = " + str(request.is_safe())
         return request.is_safe() or self.unsafe_request_is_valid(request)
 
     def unsafe_request_is_valid(self, request):
+        print request.url + " request.is_secure() = " + str(request.is_secure())
+        print request.url + " request.good_referer(" + self.domain + ") = " + str(request.good_referer(self.domain))
+        print request.url + " request.good_origin(" + self.domain + ") = " + str(request.good_origin(self.domain))
+        print request.url + " request.check_token() = " + str(request.check_token())
+        # for attr in dir(request):
+        #     print("obj.%s = %r" % (attr, getattr(request, attr)))
+
+        print "========================================================= CSFR"
         return request.is_secure() and request.good_referer(self.domain) and \
                request.good_origin(self.domain) and request.check_token()
