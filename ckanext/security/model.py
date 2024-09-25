@@ -93,6 +93,23 @@ class SecurityTOTP(DomainObject):
             .filter(User.name == user_name).first()
         return challenger
 
+    # (canada fork only): adds capability to delete totp setup
+    @classmethod
+    def delete_for_user(cls, user_name):
+        '''Deletes a securityTOTP object using the user name
+        :raises ValueError if the user_name is not provided
+        '''
+        if user_name is None:
+            raise ValueError("User name parameter must be supplied")
+        challenger = SecurityTOTP.Session.query(SecurityTOTP)\
+            .join(User, User.id == SecurityTOTP.user_id) \
+            .filter(User.name == user_name).first()
+        if hasattr(challenger, 'secret'):
+            deleted = SecurityTOTP.Session.query(SecurityTOTP)\
+                .filter(SecurityTOTP.secret == challenger.secret).delete()
+            SecurityTOTP.Session.commit()
+            return deleted
+
     def check_code(self, code, verify_only=False):
         """ Checks that a one time password is correct against the model
         :raises ReplayAttackException if the code has already been used

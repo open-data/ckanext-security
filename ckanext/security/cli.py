@@ -34,3 +34,36 @@ def reset_totp(username):
     print('Resetting totp secret for user {}'.format(username))
     SecurityTOTP.create_for_user(username)
     print('Success!')
+
+
+# (canada fork only): adds capability to show totp setup
+@security.command()
+@click.argument('username')
+def show_totp(username):
+    """
+    Shows totp setup for a given user
+    """
+    totp = SecurityTOTP.get_for_user(username)
+    if totp:
+        click.echo(str(totp.secret))
+        return
+    click.echo('No TOTP configured for user {}'.format(username))
+
+
+# (canada fork only): adds capability to delete totp setup
+@security.command()
+@click.argument('username')
+def delete_totp(username):
+    """
+    Deletes totp setup for a given user
+    """
+    totp = SecurityTOTP.get_for_user(username)
+    if totp:
+        click.echo('Deleting TOTP setup for user {}'.format(username))
+        deleted = SecurityTOTP.delete_for_user(username)
+        if deleted:
+            click.echo('Success! Deleted %s rows.' % deleted)
+        else:
+            click.echo('Error! Deleted 0 rows.')
+        return
+    click.echo('No TOTP configured for user {}'.format(username))

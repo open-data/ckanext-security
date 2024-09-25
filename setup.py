@@ -23,5 +23,15 @@ setup(
     entry_points="""
     [ckan.plugins]
     security=ckanext.security.plugin:CkanSecurityPlugin
+
+    [babel.extractors]
+    ckan = ckan.lib.extract:extract_ckan
     """,
+    message_extractors={
+        'ckanext': [
+            ('**.py', 'python', None),
+            ('**.js', 'javascript', None),
+            ('**/templates/**.html', 'ckan', None),
+        ],
+    }
 )

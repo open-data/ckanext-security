@@ -1,5 +1,8 @@
 import logging
 import ckan.plugins as p
+# (canada fork only): i18n implement
+#TODO: upstream contrib??
+from ckan.lib.plugins import DefaultTranslation
 
 from ckan.plugins import toolkit as tk
 from ckanext.security.model import define_security_tables
@@ -15,13 +18,24 @@ from ckanext.security.plugin.flask_plugin import MixinPlugin
 log = logging.getLogger(__name__)
 
 
-class CkanSecurityPlugin(MixinPlugin, p.SingletonPlugin):
+# (canada fork only): i18n implement
+#TODO: upstream contrib??
+class CkanSecurityPlugin(MixinPlugin, p.SingletonPlugin, DefaultTranslation):
     p.implements(p.IConfigurer)
     p.implements(p.IResourceController, inherit=True)
     p.implements(p.IActions)
     p.implements(p.IAuthFunctions)
     p.implements(p.ITemplateHelpers)
     p.implements(p.IValidators, inherit=True)
+    # (canada fork only): i18n implement
+    #TODO: upstream contrib??
+    p.implements(p.ITranslation, inherit=True)
+
+    # (canada fork only): i18n implement
+    #TODO: upstream contrib??
+    # DefaultTranslation, ITranslation
+    def i18n_domain(self):
+        return 'ckanext-security'
 
     # BEGIN Hooks for IConfigurer
 

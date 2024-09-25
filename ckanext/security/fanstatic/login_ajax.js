@@ -45,6 +45,12 @@
           return
         }
 
+        // (canada fork only): only force mfa if configured
+        if( !loginState.mfaConfigured ){
+          handleMfaValidation(true);
+          return;
+        }
+
         showMfaForm(loginState)
       },
       error: function (xhr) {
@@ -91,17 +97,20 @@
     hideError() // always reset state before displaying errors
 
     var errorElId = '#' + (type || 'unknown') + '-error'
-    $(errorElId).show()
+    // (canada fork only): custom error HTML
+    $(errorElId).slideDown().addClass('show');
     if (!type) {
       $('#invalid-entries').hide()
     }
     $('.control-group').addClass('error')
-    $('.error-explanation').show()
+    // (canada fork only): custom error HTML
+    // $('.error-explanation').show()
   }
 
   var hideError = function () {
-    $('.error-explanation').hide()
-    $('.error-explanation li').hide()
+    // (canada fork only): custom error HTML
+    $('.error-explanation').slideUp().removeClass('show');
+    // $('.error-explanation li').hide()
     $('#invalid-entries').show()
     $('.control-group').removeClass('error')
   }

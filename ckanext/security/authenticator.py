@@ -128,6 +128,13 @@ def authenticate(identity):
                     create_reset_key(user_obj)
                     return {'WEAK_PASS': h.redirect_to('user.perform_reset', id=user_obj.id, key=user_obj.reset_key)}
 
+        # (canada fork only): login success flash
+        h.flash_success(
+            _('<strong>Note</strong><br>{0} is now logged in').format(
+                user_name
+            ),
+            allow_html=True
+        )
         log.info('Login successful - session opened for user %r', identity['login'])
         return ckan_auth_result
 
@@ -138,6 +145,23 @@ def authenticate(identity):
     # if TOTP was successful -- reset the log in throttle
     if totp_success:
         throttle.reset()
+        # (canada fork only): enforce strong passwords at login
+        # TODO: upstream contrib??
+        if asbool(config.get('ckanext.security.force_strong_passwords_at_login', False)):
+            data, errors = validate({'name': user_name, 'password': identity['password']},
+                                    force_strong_password_at_login_schema(), {'user': user_name,
+                                                                                'user_obj': user_obj,
+                                                                                'model': model})
+            if errors and 'password' in errors:
+                create_reset_key(user_obj)
+                return {'WEAK_PASS': h.redirect_to('user.perform_reset', id=user_obj.id, key=user_obj.reset_key)}
+        # (canada fork only): login success flash
+        h.flash_success(
+            _('<strong>Note</strong><br>{0} is now logged in').format(
+                user_name
+            ),
+            allow_html=True
+        )
         log.info('Login successful - session opened for user %r', identity['login'])
         return ckan_auth_result
     else:
@@ -157,11 +181,14 @@ def authenticate_totp(auth_user):
 
     # if there is no totp configured, don't allow auth
     # shouldn't happen, login flow should create a totp_challenger
+    # (canada fork only): ckanext.security.force_mfa
     if totp_challenger is None:
-        log.info(
-            "Login attempted without MFA configured for: %s",
-            auth_user)
-        return None
+        if asbool(config.get('ckanext.security.force_mfa', True)):
+            log.info(
+                "Login attempted without MFA configured for: %s",
+                auth_user)
+            return None
+        return auth_user
 
     if not ('mfa' in request.form):
         log.info("Could not get MFA credentials from the request")
@@ -205,6 +232,9 @@ def login() -> Union[Response, str]:
                 # FIXME: revise flash message
                 h.flash_error(_('Your current password is too weak. Please create a new password before logging in again.'))
                 return user_obj.get('WEAK_PASS')
+            # (canada fork only): non-AJAX workflow
+            if isinstance(user_obj, dict) and user_obj.get('DO_TOTP', False):
+                return user_obj.get('DO_TOTP')
             next = request.args.get('next', request.args.get('came_from'))
             if _remember:
                 from datetime import timedelta
