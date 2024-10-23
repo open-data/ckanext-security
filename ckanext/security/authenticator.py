@@ -77,6 +77,9 @@ def authenticate(identity):
     by user name, ie only a limited number of attempts can be made
     to log into a specific account within a period of time."""
 
+    # (canada fork only): suppress login flash message when editing users
+    for_edit_view = identity.get('for_edit_view', False)
+
     # Run through the CKAN auth sequence first, so we can hit the DB
     # in every case and make timing attacks a little more difficult.
     ckan_auth_result = default_authenticate(identity)
@@ -129,12 +132,13 @@ def authenticate(identity):
                     return {'WEAK_PASS': h.redirect_to('user.perform_reset', id=user_obj.id, key=user_obj.reset_key)}
 
         # (canada fork only): login success flash
-        h.flash_success(
-            _('<strong>Note</strong><br>{0} is now logged in').format(
-                user_name
-            ),
-            allow_html=True
-        )
+        if not for_edit_view:
+            h.flash_success(
+                _('<strong>Note</strong><br>{0} is now logged in').format(
+                    user_name
+                ),
+                allow_html=True
+            )
         log.info('Login successful - session opened for user %r', identity['login'])
         return ckan_auth_result
 
