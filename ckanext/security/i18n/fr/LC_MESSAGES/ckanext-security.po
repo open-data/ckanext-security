@@ -21,7 +21,7 @@ msgstr ""
 
 #: ckanext/security/authenticator.py:133 ckanext/security/authenticator.py:160
 msgid "<strong>Note</strong><br>{0} is now logged in"
-msgstr ""
+msgstr "<strong>Note</strong><br />{0} est maintenant connecté"
 
 #: ckanext/security/authenticator.py:233
 msgid ""
@@ -31,15 +31,15 @@ msgstr ""
 
 #: ckanext/security/authenticator.py:250
 msgid "Login failed. Bad username or password."
-msgstr ""
+msgstr "L’authentification a échoué. Mauvais nom d’utilisateur ou mot de passe."
 
 #: ckanext/security/utils.py:32
 msgid "No user specified"
-msgstr ""
+msgstr "Pas d'utilisateur spécifié"
 
 #: ckanext/security/utils.py:52
 msgid "Not authorized to see this page"
-msgstr ""
+msgstr "Vous n'êtes pas autorisé à consulter cette page"
 
 #: ckanext/security/utils.py:218
 msgid ""
@@ -69,12 +69,12 @@ msgstr ""
 
 #: ckanext/security/validators.py:25
 msgid "Passwords must be strings."
-msgstr ""
+msgstr "Les mots de passe doivent être des chaînes de caractères."
 
 #: ckanext/security/views.py:47 ckanext/security/views.py:59
 #: ckanext/security/views.py:71
 msgid "Unauthorized to edit a user."
-msgstr ""
+msgstr "Vous n'êtes pas autorisé à modifier un utilisateur."
 
 #: ckanext/security/templates/security/configure_mfa.html:6
 #: ckanext/security/templates/security/configure_mfa.html:10
@@ -83,7 +83,7 @@ msgstr ""
 
 #: ckanext/security/templates/security/configure_mfa.html:8
 msgid "Users"
-msgstr ""
+msgstr "Utilisateurs"
 
 #: ckanext/security/templates/security/configure_mfa.html:15
 #: ckanext/security/templates/user/edit_user_form.html:14
@@ -114,7 +114,7 @@ msgstr ""
 
 #: ckanext/security/templates/security/configure_mfa.html:53
 msgid "Test"
-msgstr ""
+msgstr "Test"
 
 #: ckanext/security/templates/security/configure_mfa.html:57
 msgid ""
@@ -145,7 +145,7 @@ msgstr ""
 
 #: ckanext/security/templates/user/edit.html:5
 msgid "Account Info"
-msgstr ""
+msgstr "Info sur le compte"
 
 #: ckanext/security/templates/user/edit.html:8
 msgid "Your profile lets other CKAN users know about who you are and what you do."
@@ -183,19 +183,19 @@ msgstr ""
 
 #: ckanext/security/templates/user/snippets/login_form.html:28
 msgid "Username"
-msgstr ""
+msgstr "Nom d'utilisateur"
 
 #: ckanext/security/templates/user/snippets/login_form.html:30
 msgid "Password"
-msgstr ""
+msgstr "Mot de passe"
 
 #: ckanext/security/templates/user/snippets/login_form.html:33
 msgid "Remember me"
-msgstr ""
+msgstr "Se souvenir de moi"
 
 #: ckanext/security/templates/user/snippets/login_form.html:37
 msgid "Next"
-msgstr ""
+msgstr "Suivant"
 
 #: ckanext/security/templates/user/snippets/login_form.html:46
 msgid ""
@@ -217,5 +217,5 @@ msgstr ""
 
 #: ckanext/security/templates/user/snippets/login_form.html:62
 msgid "Submit"
-msgstr ""
+msgstr "Soumettre"
 
