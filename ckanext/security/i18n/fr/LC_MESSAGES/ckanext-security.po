@@ -28,6 +28,8 @@ msgid ""
 "Your current password is too weak. Please create a new password before "
 "logging in again."
 msgstr ""
+"Votre mot de passe actuel est trop faible. Veuillez créer un nouveau mot "
+"de passe avant de vous connecter à nouveau."
 
 #: ckanext/security/authenticator.py:250
 msgid "Login failed. Bad username or password."
@@ -46,12 +48,16 @@ msgid ""
 "That's a valid code. Your authenticator\n"
 "                app is correctly configured for future use."
 msgstr ""
+"C'est un code valide. Votre application d'authentification "
+"est correctement configurée pour une utilisation future."
 
 #: ckanext/security/utils.py:221
 msgid ""
 "That's an incorrect code. Try scanning\n"
 "                the QR code again with your authenticator app."
 msgstr ""
+"Il s'agit d'un code incorrect. Essayez de balayer à nouveau le "
+"code QR avec votre application d'authentification."
 
 #: ckanext/security/utils.py:242
 msgid ""
@@ -59,6 +65,8 @@ msgid ""
 "            authentication secret. Make sure you add the new secret to\n"
 "            your authenticator app."
 msgstr ""
+"Mise à jour réussie du secret d'authentification à deux facteurs. "
+"Veillez à ajouter le nouveau secret à votre application d'authentification."
 
 #: ckanext/security/utils.py:263
 msgid ""
@@ -66,6 +74,8 @@ msgid ""
 "            authentication. Make sure you delete the setup from\n"
 "            your authenticator app."
 msgstr ""
+"Désactivation réussie de l'authentification à deux facteurs. Veillez "
+"à supprimer la configuration de votre application d'authentification."
 
 #: ckanext/security/validators.py:25
 msgid "Passwords must be strings."
@@ -79,7 +89,7 @@ msgstr "Vous n'êtes pas autorisé à modifier un utilisateur."
 #: ckanext/security/templates/security/configure_mfa.html:6
 #: ckanext/security/templates/security/configure_mfa.html:10
 msgid "Configure two factor authentication"
-msgstr ""
+msgstr "Configurez l'authentification à deux facteurs"
 
 #: ckanext/security/templates/security/configure_mfa.html:8
 msgid "Users"
@@ -88,16 +98,19 @@ msgstr "Utilisateurs"
 #: ckanext/security/templates/security/configure_mfa.html:15
 #: ckanext/security/templates/user/edit_user_form.html:14
 msgid "Manage two factor authentication"
-msgstr ""
+msgstr "Gérez l'authentification à deux facteurs"
 
 #: ckanext/security/templates/security/configure_mfa.html:18
 msgid "Scan the image with the two factor authentication app on your phone."
 msgstr ""
+"Balayez l'image avec l'application d'authentification à deux facteurs de "
+"votre téléphone."
 
 #: ckanext/security/templates/security/configure_mfa.html:34
 #: ckanext/security/templates/user/snippets/login_form.html:45
 msgid "Scan this QR code with your two factor authentication app"
 msgstr ""
+"Balayez ce code QR avec votre application d'authentification à deux facteurs"
 
 #: ckanext/security/templates/security/configure_mfa.html:41
 #: ckanext/security/templates/user/snippets/login_form.html:52
@@ -105,12 +118,16 @@ msgid ""
 "If you are not able to scan the QR code, you can manually enter this "
 "secret into your authenticator app:"
 msgstr ""
+"Si vous ne pouvez pas numériser le code QR, vous pouvez saisir manuellement "
+"ce secret dans votre application d'authentification :"
 
 #: ckanext/security/templates/security/configure_mfa.html:45
 msgid ""
 "Enter the two factor authentication code from your app to test correct "
 "configuration"
 msgstr ""
+"Saisissez le code d'authentification à deux facteurs de votre application "
+"pour tester la bonne configuration"
 
 #: ckanext/security/templates/security/configure_mfa.html:53
 msgid "Test"
@@ -122,26 +139,29 @@ msgid ""
 "only be necessary if you have deleted the authenticator app or are "
 "replacing your phone."
 msgstr ""
+"Êtes-vous sûr de vouloir générer un nouveau secret à deux facteurs? "
+"Cette opération n'est nécessaire que si vous avez supprimé l'application "
+"d'authentification ou si vous remplacez votre téléphone."
 
 #: ckanext/security/templates/security/configure_mfa.html:59
 msgid "Generate new two factor secret"
-msgstr ""
+msgstr "Générez un nouveau secret à deux facteurs"
 
 #: ckanext/security/templates/security/configure_mfa.html:60
 msgid "Are you sure you want to disable two factor authentication?"
-msgstr ""
+msgstr "Êtes-vous sûr de vouloir désactiver l'authentification à deux facteurs?"
 
 #: ckanext/security/templates/security/configure_mfa.html:62
 msgid "Disable two factor authentication"
-msgstr ""
+msgstr "Désactivez l'authentification à deux facteurs"
 
 #: ckanext/security/templates/security/configure_mfa.html:65
 msgid "Are you sure you want to enable two factor authentication?"
-msgstr ""
+msgstr "Êtes-vous sûr de vouloir activer l'authentification à deux facteurs?"
 
 #: ckanext/security/templates/security/configure_mfa.html:67
 msgid "Enable two factor authentication"
-msgstr ""
+msgstr "Activez l'authentification à deux facteurs"
 
 #: ckanext/security/templates/user/edit.html:5
 msgid "Account Info"
@@ -150,20 +170,24 @@ msgstr "Info sur le compte"
 #: ckanext/security/templates/user/edit.html:8
 msgid "Your profile lets other CKAN users know about who you are and what you do."
 msgstr ""
+"Votre profil permet aux autres utilisateurs de CKAN de savoir qui vous êtes et ce "
+"que vous faites."
 
 #: ckanext/security/templates/user/edit_user_form.html:5
 msgid "Reactivate User"
-msgstr ""
+msgstr "Réactivez l'utilisateur"
 
 #: ckanext/security/templates/user/edit_user_form.html:6
 msgid ""
 "This account is deactivated, if you want to reactivate it, please click "
 "on checkbox."
 msgstr ""
+"Ce compte est désactivé, si vous souhaitez le réactiver, veuillez cliquer "
+"sur la case à cocher."
 
 #: ckanext/security/templates/user/edit_user_form.html:13
 msgid "Two factor authentication"
-msgstr ""
+msgstr "Authentification à deux facteurs"
 
 #: ckanext/security/templates/user/snippets/login_form.html:17
 msgid "The form contains invalid entries:"
@@ -175,11 +199,11 @@ msgstr "L’authentification a échoué. Mauvais nom d’utilisateur ou mot de p
 
 #: ckanext/security/templates/user/snippets/login_form.html:20
 msgid "Invalid code, please try again."
-msgstr ""
+msgstr "Code invalide, veuillez réessayer."
 
 #: ckanext/security/templates/user/snippets/login_form.html:21
 msgid "An unknown error occurred."
-msgstr ""
+msgstr "Une erreur inconnue s'est produite."
 
 #: ckanext/security/templates/user/snippets/login_form.html:28
 msgid "Username"
@@ -202,18 +226,22 @@ msgid ""
 "If you don't already have an authenticator app, you could try Google "
 "Authenticator."
 msgstr ""
+"Si vous n'avez pas encore d'application d'authentification, vous "
+"pouvez essayer Google Authenticator."
 
 #: ckanext/security/templates/user/snippets/login_form.html:56
 msgid "Please enter your authenticator app generated 6-digit verification code."
 msgstr ""
+"Veuillez saisir le code de vérification à 6 chiffres généré par votre "
+"application d'authentification."
 
 #: ckanext/security/templates/user/snippets/login_form.html:57
 msgid "Verification code"
-msgstr ""
+msgstr "Code de vérification"
 
 #: ckanext/security/templates/user/snippets/login_form.html:61
 msgid "Need help?"
-msgstr ""
+msgstr "Besoin d’aide?"
 
 #: ckanext/security/templates/user/snippets/login_form.html:62
 msgid "Submit"
