@@ -2,6 +2,7 @@ import logging
 import ckan.plugins as p
 # (canada fork only): i18n implement
 #TODO: upstream contrib??
+import os
 from ckan.lib.plugins import DefaultTranslation
 
 from ckan.plugins import toolkit as tk
@@ -29,13 +30,22 @@ class CkanSecurityPlugin(MixinPlugin, p.SingletonPlugin, DefaultTranslation):
     p.implements(p.IValidators, inherit=True)
     # (canada fork only): i18n implement
     #TODO: upstream contrib??
-    p.implements(p.ITranslation, inherit=True)
+    p.implements(p.ITranslation)
 
     # (canada fork only): i18n implement
     #TODO: upstream contrib??
     # DefaultTranslation, ITranslation
+    @classmethod
     def i18n_domain(self):
         return 'ckanext-security'
+
+    @classmethod
+    def i18n_directory(self):
+        return os.path.join(os.path.dirname(str(__file__)), '../i18n')
+
+    @classmethod
+    def i18n_locales(self):
+        return ['en', 'fr']
 
     # BEGIN Hooks for IConfigurer
 
