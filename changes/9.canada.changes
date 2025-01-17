@@ -1,0 +1,1 @@
+Changed failed login attempts to log level INFO for our production environment logging configurations.

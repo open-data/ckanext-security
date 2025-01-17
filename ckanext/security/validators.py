@@ -57,8 +57,9 @@ def user_password_validator(key, data, errors, context):
 
 def old_username_validator(key, data, errors, context):
     # Completely prevents changing of user names
-    old_user = authz._get_user(context.get('user'))
-    return old_user.name
+    # (canada fork only): pop name, fix fatal errors
+    # TODO: upstream contrib!!
+    data.pop(key, None)
 
 
 def ensure_str(value):
