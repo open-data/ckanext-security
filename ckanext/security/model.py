@@ -130,7 +130,8 @@ class SecurityTOTP(DomainObject):
             self.last_successful_challenge = datetime.datetime.utcnow()
             self.save()
         else:
-            log.debug("Failed to verify the totp code")
+            # (canada fork only): log level INFO
+            log.info("Failed to verify the totp code")
         return result
 
     @property

@@ -75,7 +75,8 @@ class LoginThrottle(object):
                      self.user.name)
             try:
                 notify_lockout(self.user, self.login_lock_timeout)
-                log.debug("Lockout notification for user %s sent",
+                # (canada fork only): log level INFO
+                log.info("Lockout notification for user %s sent",
                           self.user.name)
             except Exception as exc:
                 msg = "Sending lockout notification for %s failed"
