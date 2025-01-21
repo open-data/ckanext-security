@@ -85,7 +85,7 @@ def default_update_user_schema():
 @validator_args
 def force_strong_password_at_login_schema(not_empty, name_validator,
         user_name_validator, unicode_safe,
-        user_password_validator, old_username_validator):
+        user_password_validator):
     return {'name': [not_empty, name_validator, user_name_validator,
-                     unicode_safe, old_username_validator],
+                     unicode_safe],
             'password': [not_empty, unicode_safe, user_password_validator],}
