@@ -1,0 +1,1 @@
+Fixed an issue with the User Update schema not requiring `name` but we always need `name` for the password validator. User `name` cannot be modified still.

@@ -2,10 +2,11 @@
 import six
 import string
 
-from ckan import authz
+# (canada fork only): fix fatal errors
+# TODO: upstream contrib!!
+from ckan import authz, model
 from ckan.common import _
 from ckan.lib.navl.dictization_functions import Missing, Invalid
-# (canada fork only): more configs
 from ckan.plugins.toolkit import config, asbool
 
 MIN_LEN_ERROR = 'Your password must be {} characters or longer.'
@@ -57,9 +58,18 @@ def user_password_validator(key, data, errors, context):
 
 def old_username_validator(key, data, errors, context):
     # Completely prevents changing of user names
-    # (canada fork only): pop name, fix fatal errors
+    # (canada fork only): fix fatal errors
     # TODO: upstream contrib!!
-    data.pop(key, None)
+    # this validator is only used in user_update schema.
+    # the user_update action does get_or_bust for id,
+    # so there will always be an id at this point.
+    # the action would also have checked for the user
+    # in the database, so we can assume that is exists
+    # at this point.
+    uuid = data.get(key[:-1] + ('id',))
+    user_obj = model.User.get(uuid)
+    data[key] = user_obj.name
+    return
 
 
 def ensure_str(value):
