@@ -227,6 +227,10 @@ def login() -> Union[Response, str]:
         password = request.form.get("password")
         _remember = request.form.get("remember")
 
+        # (canada fork only): lower case logins
+        if username_or_email:
+            username_or_email = username_or_email.lower()
+
         identity = {
             u"login": username_or_email,
             u"password": password
