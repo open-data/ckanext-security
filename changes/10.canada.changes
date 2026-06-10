@@ -1,0 +1,1 @@
+Log level for the Resource mimetype validator has been changed from `INFO` to `DEBUG`

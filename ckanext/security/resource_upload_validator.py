@@ -112,7 +112,8 @@ def validate_upload_type(resource):
     blacklist = list(DEFAULT_UPLOAD_BLACKLIST)
     blacklist.extend(config_blacklist)
 
-    log.info('Detected extensions/mimetypes: %s', extensions_and_mimetypes)
+    # (canada fork only): info -> debug log level
+    log.debug('Detected extensions/mimetypes: %s', extensions_and_mimetypes)
     # test all extensions and mimetypes against blacklist, fail fast
     if any([ext.lower() in blacklist for ext in extensions_and_mimetypes]):
         log.warning(
